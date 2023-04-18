@@ -1,65 +1,78 @@
-import React, {useState} from 'react';
-import DisplayComponent from './Components/DisplayComponent';
-import BtnComponent from './Components/BtnComponent';
-import './App.css';
+import { useState } from 'react';
 
 function App() {
-  const [time, setTime] = useState({ms:0, s:0, m:0, h:0});
-  const [interv, setInterv] = useState();
-  const [status, setStatus] = useState(0);
-  // Not started = 0
-  // started = 1
-  // stopped = 2
+	const [calc, setCalc] = useState("");
+	const [result, setResult] = useState("");
 
-  const start = () => {
-    run();
-    setStatus(1);
-    setInterv(setInterval(run, 10));
-  };
+	const ops = ['/', '*', '-', '+', '.'];
 
-  var updatedMs = time.ms, updatedS = time.s, updatedM = time.m, updatedH = time.h;
+	const createDigits = () => {
+		const digits = [];
 
-  const run = () => {
-    if(updatedM === 60){
-      updatedH++;
-      updatedM = 0;
-    }
-    if(updatedS === 60){
-      updatedM++;
-      updatedS = 0;
-    }
-    if(updatedMs === 100){
-      updatedS++;
-      updatedMs = 0;
-    }
-    updatedMs++;
-    return setTime({ms:updatedMs, s:updatedS, m:updatedM, h:updatedH});
-  };
+		for (let i = 1; i < 10; i++) {
+			digits.push(<button onClick={() => updateCalc(i.toString())} key={i}>{i}</button>);
+		}
 
-  const stop = () => {
-    clearInterval(interv);
-    setStatus(2);
-  };
+		return digits;
+	}
 
-  const reset = () => {
-    clearInterval(interv);
-    setStatus(0);
-    setTime({ms:0, s:0, m:0, h:0})
-  };
+	const updateCalc = (value) => {
+		if (
+			ops.includes(value) && calc === '' || 
+			ops.includes(value) && ops.includes(calc.slice(-1))
+		) {
+			
+			return;
+		}
+		
+		setCalc(calc + value);
 
-  const resume = () => start();
+		if (!ops.includes(value)) {
+			setResult(eval(calc + value).toString());
+		}
+	}
 
+	const calculate = () => {
+		setCalc(eval(calc).toString());
+	}
 
-  return (
-    <div className="main-section">
-     <div className="clock-holder">
-          <div className="stopwatch">
-               <DisplayComponent time={time}/>
-               <BtnComponent status={status} resume={resume} reset={reset} stop={stop} start={start}/>
-          </div>
-     </div>
-    </div>
-  );
+	const deleteLast = () => {
+		if (calc == '') {
+
+		}
+		const value = calc.slice(0, -1);
+
+		
+		setCalc(value);
+		setResult(eval(value).toString());
+		
+	}
+
+	return (
+		<div className="App">
+			<div className="calculator">
+				<div className="display">
+					<span>{result ? '(' + result + ')' : ''}</span> {calc || 0}
+				</div>
+
+				<div className="operators">
+					<button onClick={() => updateCalc('/')}>/</button>
+					<button onClick={() => updateCalc('*')}>x</button>
+					<button onClick={() => updateCalc('-')}>-</button>
+					<button onClick={() => updateCalc('+')}>+</button>
+
+					<button onClick={deleteLast}>DEL</button>
+				</div>
+
+				<div className="digits">
+					{createDigits()}
+					<button onClick={() => updateCalc('0')}>0</button>
+					<button onClick={() => updateCalc('.')}>.</button>
+					<button onClick={calculate}>=</button>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;
