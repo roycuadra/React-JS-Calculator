@@ -1,4 +1,4 @@
-# APP DEMO:
+# App Demo:
 https://react-js-stopwatch.vercel.app/
 
 # Getting Started with Create React App
