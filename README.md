@@ -1,5 +1,5 @@
-# App Demo:
-https://react-js-stopwatch.vercel.app/
+# Live Demo:
+https://react-js-calculator-sooty.vercel.app/
 
 # Getting Started with Create React App
 
